@@ -32,4 +32,5 @@ const char* user_role_to_string(UserRole role);
 UserRole user_string_to_role(const char* str);
 const char* user_status_to_string(UserStatus status);
 UserStatus user_string_to_status(const char* str);
-#endif 
+
+#endif

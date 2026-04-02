@@ -43,6 +43,7 @@ const char* user_role_to_string(UserRole role) {
 
 UserRole user_string_to_role(const char* str) {
     if (strcmp(str, "Admin") == 0) return ROLE_ADMIN;
+    if (strcmp(str, "Staff") == 0) return ROLE_STAFF;
     return ROLE_STAFF;
 }
 
