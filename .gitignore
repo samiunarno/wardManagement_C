@@ -2,9 +2,11 @@
 *
 
 # But explicitly KEEP these files
-!README.md
+# Keep these files
 !.gitignore
-!Makefile
+!README.md
+!bed_management.exe
+!bed_management     # for Linux/macOS
 
 # Also keep source code if you want to backup
 # (Remove the # below if you want to keep code in git)
