@@ -1,5 +1,6 @@
 #ifndef BED_H
 #define BED_H
+
 typedef enum {
     BED_AVAILABLE,
     BED_OCCUPIED,
@@ -20,5 +21,6 @@ const char* bed_status_to_string(BedStatus status);
 BedStatus bed_string_to_status(const char* str);
 void display_bed(const Bed* bed);
 Bed* find_bed_by_id(Bed* head, int bed_id);
+int count_beds_by_status(Bed* head, BedStatus status);
 
 #endif

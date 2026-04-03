@@ -40,8 +40,8 @@ BedStatus bed_string_to_status(const char* str) {
 }
 
 void display_bed(const Bed* bed) {
-    printf("BedID: %d, WardID: %d, Status: %s, PatientID: %d\n",
-           bed->id, bed->ward_id, bed_status_to_string(bed->status), bed->patient_id);
+    printf("  BedID: %d, Status: %s, PatientID: %d\n",
+           bed->id, bed_status_to_string(bed->status), bed->patient_id);
 }
 
 Bed* find_bed_by_id(Bed* head, int bed_id) {
@@ -51,4 +51,14 @@ Bed* find_bed_by_id(Bed* head, int bed_id) {
         current = current->next;
     }
     return NULL;
+}
+
+int count_beds_by_status(Bed* head, BedStatus status) {
+    int count = 0;
+    Bed* current = head;
+    while (current != NULL) {
+        if (current->status == status) count++;
+        current = current->next;
+    }
+    return count;
 }

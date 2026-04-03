@@ -26,6 +26,7 @@ Patient* create_patient(int id, const char* name, int age, const char* gender,
 void free_patient_list(Patient* head);
 void display_patient(const Patient* patient);
 Patient* find_patient_by_id(Patient* head, int id);
-Patient* find_patient_by_patient_id(Patient* head, const char* patient_id);
+int get_patient_count(Patient* head);
+int get_admitted_count(Patient* head);
 
 #endif

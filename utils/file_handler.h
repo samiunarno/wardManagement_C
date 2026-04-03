@@ -7,6 +7,5 @@ FILE* open_file(const char* filename, const char* mode);
 void close_file(FILE* file);
 int read_line(FILE* file, char* buffer, int size);
 int write_line(FILE* file, const char* line);
-int file_exists(const char* filename);
 
 #endif

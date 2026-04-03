@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-User* create_user(const char* username, const char* password, UserRole role, UserStatus status) {
+User* create_user(int id, const char* username, const char* password, UserRole role, UserStatus status) {
     User* user = (User*)malloc(sizeof(User));
     if (user) {
+        user->id = id;
         strncpy(user->username, username, MAX_USERNAME - 1);
         user->username[MAX_USERNAME - 1] = '\0';
         strncpy(user->password, password, MAX_PASSWORD - 1);
@@ -27,8 +28,8 @@ void free_user_list(User* head) {
 }
 
 void display_user(const User* user) {
-    printf("Username: %s, Role: %s, Status: %s\n", 
-           user->username, 
+    printf("ID: %d, Username: %s, Role: %s, Status: %s\n", 
+           user->id, user->username, 
            user_role_to_string(user->role),
            user_status_to_string(user->status));
 }
@@ -60,4 +61,15 @@ UserStatus user_string_to_status(const char* str) {
     if (strcmp(str, "Approved") == 0) return STATUS_APPROVED;
     if (strcmp(str, "Rejected") == 0) return STATUS_REJECTED;
     return STATUS_PENDING;
+}
+
+User* find_user_by_username(User* head, const char* username) {
+    User* current = head;
+    while (current != NULL) {
+        if (strcmp(current->username, username) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
 }

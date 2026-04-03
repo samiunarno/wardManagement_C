@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 
 void trim(char* str) {
     if (!str) return;
@@ -27,34 +28,6 @@ void trim(char* str) {
     }
 }
 
-int is_valid_name(const char* name) {
-    if (!name || strlen(name) == 0 || strlen(name) > 50) return 0;
-    
-    for (int i = 0; name[i]; i++) {
-        if (!isalpha(name[i]) && name[i] != ' ' && name[i] != '.') return 0;
-    }
-    return 1;
-}
-
-int is_valid_age(int age) {
-    return age >= 0 && age <= 120;
-}
-
-int is_valid_date(const char* date) {
-    if (!date || strlen(date) != 10) return 0;
-    if (date[4] != '-' || date[7] != '-') return 0;
-    
-    int year = atoi(date);
-    int month = atoi(date + 5);
-    int day = atoi(date + 8);
-    
-    if (year < 1900 || year > 2100) return 0;
-    if (month < 1 || month > 12) return 0;
-    if (day < 1 || day > 31) return 0;
-    
-    return 1;
-}
-
 void get_current_date(char* buffer, int size) {
     time_t t = time(NULL);
     struct tm* tm = localtime(&t);
@@ -73,13 +46,14 @@ void split_string(const char* str, char delimiter, char*** result, int* count) {
     char* token;
     char** tokens = NULL;
     int token_count = 0;
+    char delim[2] = {delimiter, '\0'};
     
-    token = strtok(str_copy, &delimiter);
+    token = strtok(str_copy, delim);
     while (token != NULL) {
         tokens = realloc(tokens, (token_count + 1) * sizeof(char*));
         tokens[token_count] = strdup(token);
         token_count++;
-        token = strtok(NULL, &delimiter);
+        token = strtok(NULL, delim);
     }
     
     free(str_copy);

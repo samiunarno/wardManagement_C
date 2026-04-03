@@ -32,8 +32,6 @@ void free_ward_list(Ward* head) {
 
 int add_bed_to_ward(Ward* ward, int bed_id) {
     if (!ward) return 0;
-    
-    // Check if bed already exists
     if (find_bed_in_ward(ward, bed_id)) return 0;
     
     Bed* new_bed = create_bed(bed_id, ward->id, BED_AVAILABLE, 0);
@@ -77,26 +75,12 @@ Bed* find_bed_in_ward(Ward* ward, int bed_id) {
 
 int get_available_beds_count(Ward* ward) {
     if (!ward) return 0;
-    
-    int count = 0;
-    Bed* current = ward->bed_list;
-    while (current != NULL) {
-        if (current->status == BED_AVAILABLE) count++;
-        current = current->next;
-    }
-    return count;
+    return count_beds_by_status(ward->bed_list, BED_AVAILABLE);
 }
 
 int get_occupied_beds_count(Ward* ward) {
     if (!ward) return 0;
-    
-    int count = 0;
-    Bed* current = ward->bed_list;
-    while (current != NULL) {
-        if (current->status == BED_OCCUPIED) count++;
-        current = current->next;
-    }
-    return count;
+    return count_beds_by_status(ward->bed_list, BED_OCCUPIED);
 }
 
 void display_ward(const Ward* ward) {
@@ -108,6 +92,10 @@ void display_ward(const Ward* ward) {
 
 void display_ward_beds(const Ward* ward) {
     Bed* current = ward->bed_list;
+    if (current == NULL) {
+        printf("  No beds in this ward.\n");
+        return;
+    }
     while (current != NULL) {
         display_bed(current);
         current = current->next;
@@ -121,4 +109,34 @@ Ward* find_ward_by_id(Ward* head, int ward_id) {
         current = current->next;
     }
     return NULL;
+}
+
+int get_total_beds(Ward* head) {
+    int total = 0;
+    Ward* current = head;
+    while (current != NULL) {
+        total += current->capacity;
+        current = current->next;
+    }
+    return total;
+}
+
+int get_total_available_beds(Ward* head) {
+    int total = 0;
+    Ward* current = head;
+    while (current != NULL) {
+        total += get_available_beds_count(current);
+        current = current->next;
+    }
+    return total;
+}
+
+int get_total_occupied_beds(Ward* head) {
+    int total = 0;
+    Ward* current = head;
+    while (current != NULL) {
+        total += get_occupied_beds_count(current);
+        current = current->next;
+    }
+    return total;
 }

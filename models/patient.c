@@ -52,21 +52,30 @@ void display_patient(const Patient* patient) {
 Patient* find_patient_by_id(Patient* head, int id) {
     Patient* current = head;
     while (current != NULL) {
-        if (current->id == id) {
-            return current;
-        }
+        if (current->id == id) return current;
         current = current->next;
     }
     return NULL;
 }
 
-Patient* find_patient_by_patient_id(Patient* head, const char* patient_id) {
+int get_patient_count(Patient* head) {
+    int count = 0;
     Patient* current = head;
     while (current != NULL) {
-        if (strcmp(current->patient_id, patient_id) == 0) {
-            return current;
+        count++;
+        current = current->next;
+    }
+    return count;
+}
+
+int get_admitted_count(Patient* head) {
+    int count = 0;
+    Patient* current = head;
+    while (current != NULL) {
+        if (current->bed_id != 0 && strlen(current->discharge_date) == 0) {
+            count++;
         }
         current = current->next;
     }
-    return NULL;
+    return count;
 }

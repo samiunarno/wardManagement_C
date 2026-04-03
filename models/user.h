@@ -3,8 +3,6 @@
 
 #define MAX_USERNAME 50
 #define MAX_PASSWORD 50
-#define MAX_ROLE 10
-#define MAX_STATUS 10
 
 typedef enum {
     ROLE_ADMIN,
@@ -18,6 +16,7 @@ typedef enum {
 } UserStatus;
 
 typedef struct User {
+    int id;
     char username[MAX_USERNAME];
     char password[MAX_PASSWORD];
     UserRole role;
@@ -25,12 +24,13 @@ typedef struct User {
     struct User* next;
 } User;
 
-User* create_user(const char* username, const char* password, UserRole role, UserStatus status);
+User* create_user(int id, const char* username, const char* password, UserRole role, UserStatus status);
 void free_user_list(User* head);
 void display_user(const User* user);
 const char* user_role_to_string(UserRole role);
 UserRole user_string_to_role(const char* str);
 const char* user_status_to_string(UserStatus status);
 UserStatus user_string_to_status(const char* str);
+User* find_user_by_username(User* head, const char* username);
 
 #endif

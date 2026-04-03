@@ -25,5 +25,8 @@ int get_occupied_beds_count(Ward* ward);
 void display_ward(const Ward* ward);
 void display_ward_beds(const Ward* ward);
 Ward* find_ward_by_id(Ward* head, int ward_id);
+int get_total_beds(Ward* head);
+int get_total_available_beds(Ward* head);
+int get_total_occupied_beds(Ward* head);
 
 #endif

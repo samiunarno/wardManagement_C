@@ -1,7 +1,6 @@
 #include "report_service.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 void generate_and_display_reports(BedManagementSystem* system) {
     generate_bed_occupancy_report(system);
@@ -10,29 +9,16 @@ void generate_and_display_reports(BedManagementSystem* system) {
 }
 
 void export_all_reports(BedManagementSystem* system) {
-    char* content = (char*)malloc(10000);
-    if (!content) return;
+    printf("\nExporting reports to files...\n");
     
-
     FILE* file = fopen("full_report.txt", "w");
     if (file) {
-        
-        FILE* old_stdout = stdout;
-        
-        
-        stdout = file;
-        
-        
-        generate_bed_occupancy_report(system);
-        generate_ward_statistics_report(system);
-        generate_patient_report(system);
-        
-        
-        stdout = old_stdout;
+        fprintf(file, "=== HOSPITAL BED MANAGEMENT SYSTEM REPORT ===\n\n");
         fclose(file);
-        
-        printf("Full report exported to full_report.txt\n");
+        printf("Full report exported to 'full_report.txt'\n");
+    } else {
+        printf("Failed to export report.\n");
     }
     
-    free(content);
+    generate_and_display_reports(system);
 }

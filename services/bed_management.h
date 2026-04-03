@@ -12,13 +12,13 @@ typedef struct {
     int next_ward_id;
     int next_bed_id;
     int next_patient_id;
+    int next_user_id;
 } BedManagementSystem;
 
 BedManagementSystem* create_system();
 void free_system(BedManagementSystem* system);
 void load_all_data(BedManagementSystem* system);
 void save_all_data(BedManagementSystem* system);
-
 
 int add_ward(BedManagementSystem* system, const char* name, const char* type, int capacity);
 int remove_ward(BedManagementSystem* system, int ward_id);
@@ -38,7 +38,6 @@ void display_all_patients(BedManagementSystem* system);
 void generate_bed_occupancy_report(BedManagementSystem* system);
 void generate_ward_statistics_report(BedManagementSystem* system);
 void generate_patient_report(BedManagementSystem* system);
-void export_report_to_file(const char* filename, const char* content);
 
 int register_user(BedManagementSystem* system, const char* username, const char* password, const char* role);
 int approve_user(BedManagementSystem* system, const char* username);

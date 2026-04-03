@@ -10,20 +10,44 @@ void staff_menu(BedManagementSystem* system);
 void registration_menu(BedManagementSystem* system);
 void admin_approval_menu(BedManagementSystem* system);
 
+// Add this at the beginning of main()
+int verify_license() {
+    // Check for license file
+    FILE* license = fopen("license.key", "r");
+    if (!license) {
+        printf("License not found! Contact support.\n");
+        return 0;
+    }
+    // Verify license key...
+    return 1;
+}
+
 int main() {
+    if (!verify_license()) {
+        printf("LICENSE BY JOYCE\n");
+        return 1;
+    }
+
     BedManagementSystem* system = create_system();
     User* current_user = NULL;
     int choice;
     
-    printf("=== Hospital Bed Management System ===\n");
+    printf("========================================\n");
+    printf("   HOSPITAL BED MANAGEMENT SYSTEM\n");
+    printf("========================================\n");
     
     while (1) {
-        printf("\n1. Login\n2. Register\n3. Exit\nChoice: ");
+        printf("\n========== MAIN MENU ==========\n");
+        printf("1. Login\n");
+        printf("2. Register\n");
+        printf("3. Exit\n");
+        printf("Choice: ");
         scanf("%d", &choice);
-        getchar(); 
+        getchar();
         
         if (choice == 1) {
             char username[MAX_USERNAME], password[MAX_PASSWORD];
+            printf("\n--- LOGIN ---\n");
             printf("Username: ");
             fgets(username, MAX_USERNAME, stdin);
             username[strcspn(username, "\n")] = '\0';
@@ -34,11 +58,11 @@ int main() {
             
             if (authenticate(system, username, password, &current_user)) {
                 if (current_user->status != STATUS_APPROVED) {
-                    printf("Account not approved yet. Please wait for admin approval.\n");
+                    printf("\n[!] Account not approved yet. Please wait for admin approval.\n");
                     continue;
                 }
                 
-                printf("Welcome, %s (%s)!\n", current_user->username, 
+                printf("\n[+] Welcome, %s (%s)!\n", current_user->username, 
                        user_role_to_string(current_user->role));
                 
                 if (current_user->role == ROLE_ADMIN) {
@@ -47,14 +71,16 @@ int main() {
                     staff_menu(system);
                 }
             } else {
-                printf("Invalid credentials.\n");
+                printf("\n[!] Invalid credentials.\n");
             }
         } else if (choice == 2) {
             registration_menu(system);
         } else {
-            printf("\n=== Exiting System ===\n");
+            printf("\n========================================\n");
+            printf("   EXITING SYSTEM...\n");
+            printf("========================================\n");
             free_system(system);
-            printf("Memory cleanup completed. Goodbye!\n");
+            printf("Goodbye!\n");
             break;
         }
     }
@@ -65,7 +91,7 @@ int main() {
 void registration_menu(BedManagementSystem* system) {
     char username[MAX_USERNAME], password[MAX_PASSWORD], role[20];
     
-    printf("\n--- Registration ---\n");
+    printf("\n--- REGISTRATION ---\n");
     printf("Username: ");
     fgets(username, MAX_USERNAME, stdin);
     username[strcspn(username, "\n")] = '\0';
@@ -79,35 +105,38 @@ void registration_menu(BedManagementSystem* system) {
     role[strcspn(role, "\n")] = '\0';
     
     if (register_user(system, username, password, role)) {
-        printf("Registration successful! Awaiting admin approval.\n");
+        printf("\n[+] Registration successful! Awaiting admin approval.\n");
     } else {
-        printf("Registration failed. Username may already exist.\n");
+        printf("\n[!] Registration failed. Username may already exist.\n");
     }
 }
 
 void admin_approval_menu(BedManagementSystem* system) {
     int count = get_pending_users_count(system);
     if (count == 0) {
-        printf("No pending registrations.\n");
+        printf("\n[+] No pending registrations.\n");
         return;
     }
     
-    printf("\n--- Pending Approvals ---\n");
+    printf("\n--- PENDING APPROVALS ---\n");
     User* pending = get_pending_users(system);
     User* current = pending;
     
     while (current != NULL) {
         display_user(current);
         char choice;
-        printf("Approve (y/n)? ");
+        printf("Approve this user? (y/n): ");
         scanf(" %c", &choice);
         getchar();
         
         if (choice == 'y' || choice == 'Y') {
-            approve_user(system, current->username);
-            printf("User approved.\n");
+            if (approve_user(system, current->username)) {
+                printf("[+] User approved.\n");
+            } else {
+                printf("[!] Failed to approve user.\n");
+            }
         } else {
-            printf("User rejected.\n");
+            printf("[-] User rejected.\n");
         }
         current = current->next;
     }
@@ -118,12 +147,21 @@ void admin_approval_menu(BedManagementSystem* system) {
 void admin_menu(BedManagementSystem* system) {
     int choice;
     do {
-        printf("\n--- Admin Menu ---\n");
-        printf("1. Add Ward\n2. Remove Ward\n3. Add Bed\n4. Remove Bed\n");
-        printf("5. Admit Patient\n6. Transfer Patient\n7. Discharge Patient\n");
-        printf("8. View All Wards\n9. View All Patients\n");
-        printf("10. Generate Reports\n11. Export Reports to File\n");
-        printf("12. Approve User Registrations\n13. Exit (with cleanup)\nChoice: ");
+        printf("\n========== ADMIN MENU ==========\n");
+        printf("1. Add Ward\n");
+        printf("2. Remove Ward\n");
+        printf("3. Add Bed\n");
+        printf("4. Remove Bed\n");
+        printf("5. Admit Patient\n");
+        printf("6. Transfer Patient\n");
+        printf("7. Discharge Patient\n");
+        printf("8. View All Wards\n");
+        printf("9. View All Patients\n");
+        printf("10. Generate Reports\n");
+        printf("11. Export Reports\n");
+        printf("12. Approve User Registrations\n");
+        printf("13. Logout\n");
+        printf("Choice: ");
         scanf("%d", &choice);
         getchar();
         
@@ -131,6 +169,7 @@ void admin_menu(BedManagementSystem* system) {
             case 1: {
                 char name[MAX_WARD_NAME], type[MAX_WARD_TYPE];
                 int capacity;
+                printf("\n--- ADD WARD ---\n");
                 printf("Ward Name: ");
                 fgets(name, MAX_WARD_NAME, stdin);
                 name[strcspn(name, "\n")] = '\0';
@@ -142,49 +181,52 @@ void admin_menu(BedManagementSystem* system) {
                 getchar();
                 
                 if (add_ward(system, name, type, capacity)) {
-                    printf("Ward added successfully.\n");
+                    printf("[+] Ward added successfully.\n");
                 } else {
-                    printf("Failed to add ward.\n");
+                    printf("[!] Failed to add ward.\n");
                 }
                 break;
             }
             case 2: {
                 int ward_id;
+                printf("\n--- REMOVE WARD ---\n");
                 printf("Ward ID: ");
                 scanf("%d", &ward_id);
                 getchar();
                 if (remove_ward(system, ward_id)) {
-                    printf("Ward removed successfully.\n");
+                    printf("[+] Ward removed successfully.\n");
                 } else {
-                    printf("Ward not found.\n");
+                    printf("[!] Ward not found.\n");
                 }
                 break;
             }
             case 3: {
                 int ward_id, bed_id;
+                printf("\n--- ADD BED ---\n");
                 printf("Ward ID: ");
                 scanf("%d", &ward_id);
                 printf("Bed ID: ");
                 scanf("%d", &bed_id);
                 getchar();
                 if (add_bed(system, ward_id, bed_id)) {
-                    printf("Bed added successfully.\n");
+                    printf("[+] Bed added successfully.\n");
                 } else {
-                    printf("Failed to add bed.\n");
+                    printf("[!] Failed to add bed.\n");
                 }
                 break;
             }
             case 4: {
                 int ward_id, bed_id;
+                printf("\n--- REMOVE BED ---\n");
                 printf("Ward ID: ");
                 scanf("%d", &ward_id);
                 printf("Bed ID: ");
                 scanf("%d", &bed_id);
                 getchar();
                 if (remove_bed(system, ward_id, bed_id)) {
-                    printf("Bed removed successfully.\n");
+                    printf("[+] Bed removed successfully.\n");
                 } else {
-                    printf("Bed not found.\n");
+                    printf("[!] Bed not found.\n");
                 }
                 break;
             }
@@ -194,6 +236,7 @@ void admin_menu(BedManagementSystem* system) {
                 char current_date[11];
                 get_current_date(current_date, sizeof(current_date));
                 
+                printf("\n--- ADMIT PATIENT ---\n");
                 printf("Patient Name: ");
                 fgets(name, MAX_NAME, stdin);
                 name[strcspn(name, "\n")] = '\0';
@@ -228,14 +271,15 @@ void admin_menu(BedManagementSystem* system) {
                 
                 if (admit_patient(system, &new_patient, ward_id, bed_id)) {
                     system->next_patient_id++;
-                    printf("Patient admitted successfully.\n");
+                    printf("[+] Patient admitted successfully.\n");
                 } else {
-                    printf("Admission failed. Bed may be occupied.\n");
+                    printf("[!] Admission failed. Bed may be occupied or invalid.\n");
                 }
                 break;
             }
             case 6: {
                 int patient_id, new_ward_id, new_bed_id;
+                printf("\n--- TRANSFER PATIENT ---\n");
                 printf("Patient ID: ");
                 scanf("%d", &patient_id);
                 printf("New Ward ID: ");
@@ -244,21 +288,22 @@ void admin_menu(BedManagementSystem* system) {
                 scanf("%d", &new_bed_id);
                 getchar();
                 if (transfer_patient(system, patient_id, new_ward_id, new_bed_id)) {
-                    printf("Patient transferred successfully.\n");
+                    printf("[+] Patient transferred successfully.\n");
                 } else {
-                    printf("Transfer failed.\n");
+                    printf("[!] Transfer failed.\n");
                 }
                 break;
             }
             case 7: {
                 int patient_id;
+                printf("\n--- DISCHARGE PATIENT ---\n");
                 printf("Patient ID: ");
                 scanf("%d", &patient_id);
                 getchar();
                 if (discharge_patient(system, patient_id)) {
-                    printf("Patient discharged successfully.\n");
+                    printf("[+] Patient discharged successfully.\n");
                 } else {
-                    printf("Discharge failed.\n");
+                    printf("[!] Discharge failed. Patient may not be admitted.\n");
                 }
                 break;
             }
@@ -278,11 +323,10 @@ void admin_menu(BedManagementSystem* system) {
                 admin_approval_menu(system);
                 break;
             case 13:
-                printf("\n=== Exiting Admin Menu ===\n");
-                save_all_data(system);
+                printf("\n[+] Logging out...\n");
                 return;
             default:
-                printf("Invalid choice.\n");
+                printf("[!] Invalid choice. Please try again.\n");
         }
     } while (1);
 }
@@ -290,9 +334,14 @@ void admin_menu(BedManagementSystem* system) {
 void staff_menu(BedManagementSystem* system) {
     int choice;
     do {
-        printf("\n--- Staff Menu ---\n");
-        printf("1. View All Wards\n2. View All Patients\n3. Admit Patient\n");
-        printf("4. Discharge Patient\n5. View Reports\n6. Exit\nChoice: ");
+        printf("\n========== STAFF MENU ==========\n");
+        printf("1. View All Wards\n");
+        printf("2. View All Patients\n");
+        printf("3. Admit Patient\n");
+        printf("4. Discharge Patient\n");
+        printf("5. View Reports\n");
+        printf("6. Logout\n");
+        printf("Choice: ");
         scanf("%d", &choice);
         getchar();
         
@@ -309,6 +358,7 @@ void staff_menu(BedManagementSystem* system) {
                 char current_date[11];
                 get_current_date(current_date, sizeof(current_date));
                 
+                printf("\n--- ADMIT PATIENT ---\n");
                 printf("Patient Name: ");
                 fgets(name, MAX_NAME, stdin);
                 name[strcspn(name, "\n")] = '\0';
@@ -343,21 +393,22 @@ void staff_menu(BedManagementSystem* system) {
                 
                 if (admit_patient(system, &new_patient, ward_id, bed_id)) {
                     system->next_patient_id++;
-                    printf("Patient admitted successfully.\n");
+                    printf("[+] Patient admitted successfully.\n");
                 } else {
-                    printf("Admission failed.\n");
+                    printf("[!] Admission failed.\n");
                 }
                 break;
             }
             case 4: {
                 int patient_id;
+                printf("\n--- DISCHARGE PATIENT ---\n");
                 printf("Patient ID: ");
                 scanf("%d", &patient_id);
                 getchar();
                 if (discharge_patient(system, patient_id)) {
-                    printf("Patient discharged successfully.\n");
+                    printf("[+] Patient discharged successfully.\n");
                 } else {
-                    printf("Discharge failed.\n");
+                    printf("[!] Discharge failed.\n");
                 }
                 break;
             }
@@ -365,9 +416,10 @@ void staff_menu(BedManagementSystem* system) {
                 generate_and_display_reports(system);
                 break;
             case 6:
+                printf("\n[+] Logging out...\n");
                 return;
             default:
-                printf("Invalid choice.\n");
+                printf("[!] Invalid choice. Please try again.\n");
         }
     } while (1);
 }
