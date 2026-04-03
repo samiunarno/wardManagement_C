@@ -1,9 +1,20 @@
-# Ignore everything except README and data folder
+# Ignore ALL files by default
 *
 
-# But keep these
+# But explicitly KEEP these files
 !README.md
-!README.txt
-!data/
-!data/.gitkeep
 !.gitignore
+!Makefile
+
+# Also keep source code if you want to backup
+# (Remove the # below if you want to keep code in git)
+# !models/
+# !models/*.h
+# !models/*.c
+# !services/
+# !services/*.h
+# !services/*.c
+# !utils/
+# !utils/*.h
+# !utils/*.c
+# !main.c

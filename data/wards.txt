@@ -1,3 +1,0 @@
-3|Private Ward|Private|8|23:Available:0,22:Available:0,21:Available:0,20:Available:0,19:Available:0,18:Available:0,17:Available:0,16:Available:0
-2|ICU Ward|ICU|5|15:Available:0,14:Available:0,13:Available:0,12:Available:0,11:Available:0
-1|General Ward A|General|10|10:Available:0,9:Available:0,8:Available:0,7:Available:0,6:Available:0,5:Available:0,4:Available:0,3:Available:0,2:Occupied:2,1:Occupied:1
