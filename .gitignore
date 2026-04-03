@@ -5,6 +5,7 @@
 !README.md
 !.gitignore
 !bed_management
+!readme.md
 
 # Also keep source code if you want to backup
 # (Remove the # below if you want to keep code in git)
