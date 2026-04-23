@@ -7,15 +7,15 @@
 !bed_management
 !readme.md
 
-# Also keep source code if you want to backup
-# (Remove the # below if you want to keep code in git)
-# !models/
-# !models/*.h
-# !models/*.c
-# !services/
-# !services/*.h
-# !services/*.c
-# !utils/
-# !utils/*.h
-# !utils/*.c
-# !main.c
+Also keep source code if you want to backup
+(Remove the # below if you want to keep code in git)
+!models/
+!models/*.h
+!models/*.c
+!services/
+!services/*.h
+!services/*.c
+!utils/
+!utils/*.h
+!utils/*.c
+!main.c
